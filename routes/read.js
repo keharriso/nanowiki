@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-// TODO update viewed
 function readRouter(model, error) {
   /* GET read page. */
   router.get('/', function(req, res, next) {
@@ -18,6 +17,8 @@ function readRouter(model, error) {
           story_title: story.title,
           read_id: readId
         });
+        story.viewed = Date.now();
+        story.save();
       }
     });
   });

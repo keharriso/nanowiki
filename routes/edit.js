@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-// TODO update viewed and edited
 function editRouter(model, error) {
   /* GET edit page. */
   router.get('/', function(req, res, next) {
@@ -19,6 +18,9 @@ function editRouter(model, error) {
           read_id: story.readId,
           edit_id: editId
         });
+        story.viewed = Date.now();
+        story.edited = Date.now();
+        story.save();
       }
     });
   });
