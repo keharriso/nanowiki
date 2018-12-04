@@ -106,6 +106,7 @@ io.on('connection', function(client) {
       if (err) {
         debug(err);
       } else {
+        var entryCount = story.entries.length;
         var entryId = model.generateId();
         var entry = { id: entryId, author: author, content: content };
         var i = -1;
@@ -119,16 +120,18 @@ io.on('connection', function(client) {
             }
           }
         }
-        story.save(function (err, story) {
-          if (err) {
-            debug(err);
-          } else {
-            io.to('edit/' + story.editId).emit('AddEntry',
-                story.entries[i + 1].id, previous, author, content);
-            io.to('read/' + story.readId).emit('AddEntry',
-                story.entries[i + 1].id, previous, author, content);
-          }
-        });
+        if (story.entries.length > entryCount) {
+          story.save(function (err, story) {
+            if (err) {
+              debug(err);
+            } else {
+              io.to('edit/' + story.editId).emit('AddEntry',
+                  story.entries[i + 1].id, previous, author, content);
+              io.to('read/' + story.readId).emit('AddEntry',
+                  story.entries[i + 1].id, previous, author, content);
+            }
+          });
+        }
       }
     });
   });
