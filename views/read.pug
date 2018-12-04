@@ -1,0 +1,9 @@
+extends layout
+
+block content
+	div#nanowiki-story
+		div#nanowiki-story-title-bar
+			h1#nanowiki-story-title= story_title
+		div#nanowiki-story-body
+	script window.readId = '#{read_id}';
+	script(src='/javascripts/read.js')

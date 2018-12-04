@@ -1,0 +1,276 @@
+#!/usr/bin/env node
+
+var PORT = process.env.PORT || '3000';
+var MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost/test';
+
+/**
+ * Set up MongoDB.
+ */
+
+var model = require('../model')(MONGO_URI);
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app')(model);
+var debug = require('debug')('nanowiki:server');
+var http = require('http');
+var schedule = require('node-schedule');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(PORT);
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Set up Socket.IO server.
+ */
+
+function sendStory(client, type, id) {
+  idName = type + 'Id';
+  model.Story.findOne({ [idName]: id }, function (err, story) {
+    if (err) {
+      debug(err);
+    } else {
+      client.emit('ChangeTitle', story.title);
+      var previousId = null;
+      for (var entry of story.entries) {
+        client.emit('AddEntry', entry.id, previousId, entry.author, entry.content);
+        previousId = entry.id;
+      }
+    }
+  });
+}
+
+var watchedStories = {};
+var io = require('socket.io')(server);
+io.on('connection', function(client) {
+  client.on('disconnect', function() {
+    delete watchedStories[client.id];
+  });
+  client.on('CreateStory', function() {
+    var story = model.Story.create(function(err, story) {
+      if (err) {
+        debug(err);
+      } else {
+        client.emit('EditStory', story.editId);
+      }
+    });
+  });
+  client.on('WatchStory', function(type, id) {
+    var watched = watchedStories[client.id];
+    if (watched)
+      client.leave(watched);
+    watched = type + '/' + id;
+    watchedStories[client.id] = watched;
+    client.join(watched);
+    sendStory(client, type, id);
+  });
+  client.on('ChangeTitle', function(id, title) {
+    model.Story.findOneAndUpdate(
+      { editId: id },
+      { $set: { title: title } },
+      { fields: '-entries' },
+      function (err, story) {
+        if (err) {
+          debug(err);
+        } else {
+          io.to('edit/' + story.editId).emit('ChangeTitle', title);
+          io.to('read/' + story.readId).emit('ChangeTitle', title);
+        }
+      });
+  });
+  client.on('DeleteStory', function(id) {
+    model.Story.findOneAndDelete({ editId: id }, function(err, story) {
+      if (err) {
+        debug(err);
+      } else {
+        io.to('edit/' + story.editId).emit('DeleteStory');
+        io.to('read/' + story.readId).emit('DeleteStory');
+      }
+    });
+  });
+  client.on('AddEntry', function(editId, previous, author, content) {
+    if (content.trim() === '')
+      return;
+    model.Story.findOne({ editId: editId }, function(err, story) {
+      if (err) {
+        debug(err);
+      } else {
+        var entryId = model.generateId();
+        var entry = { id: entryId, author: author, content: content };
+        var i = -1;
+        if (!previous) {
+          story.entries.unshift(entry);
+        } else {
+          for (i = story.entries.length-1; i >= 0; --i) {
+            if (story.entries[i].id === previous) {
+              story.entries.splice(i + 1, 0, entry);
+              break;
+            }
+          }
+        }
+        story.save(function (err, story) {
+          if (err) {
+            debug(err);
+          } else {
+            io.to('edit/' + story.editId).emit('AddEntry',
+                story.entries[i + 1].id, previous, author, content);
+            io.to('read/' + story.readId).emit('AddEntry',
+                story.entries[i + 1].id, previous, author, content);
+          }
+        });
+      }
+    });
+  });
+  client.on('EditEntry', function (editId, entryId, author, content) {
+    model.Story.findOne({ editId: editId }, function(err, story) {
+      if (err) {
+        debug(err);
+      } else {
+        for (var i = story.entries.length-1; i >= 0; --i) {
+          var entry = story.entries[i];
+          if (entry.id === entryId) {
+            if (entry.content === content) {
+              break;
+            }
+            if (content.trim() === '') {
+              story.entries.splice(i, 1);
+              story.save(function(err, story) {
+                if (err) {
+                  debug(err);
+                } else {
+                  io.to('edit/' + story.editId).emit('DeleteEntry', entryId);
+                  io.to('read/' + story.readId).emit('DeleteEntry', entryId);
+                }
+              });
+            } else {
+              entry.author = author;
+              entry.content = content;
+              story.save(function(err, story) {
+                if (err) {
+                  debug(err);
+                } else {
+                  io.to('edit/' + story.editId).emit('EditEntry',
+                      entryId, author, content);
+                  io.to('read/' + story.readId).emit('EditEntry',
+                      entryId, author, content);
+                }
+              });
+            }
+            break;
+          }
+        }
+      }
+    });
+  });
+});
+
+/**
+ * Set up scheduled tasks.
+ */
+
+ // Cron-style scheduling:
+ // *    *    *    *    *    *
+ // ┬    ┬    ┬    ┬    ┬    ┬
+ // │    │    │    │    │    |
+ // │    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
+ // │    │    │    │    └───── month (1 - 12)
+ // │    │    │    └────────── day of month (1 - 31)
+ // │    │    └─────────────── hour (0 - 23)
+ // │    └──────────────────── minute (0 - 59)
+ // └───────────────────────── second (0 - 59, OPTIONAL)
+
+// Clean out expired stories every Sunday.
+schedule.scheduleJob("0 0 0 * * 0", function() {
+  try {
+    debug("Cleaning expired stories");
+    model.Story.expire(365, function(err, count) {
+      if (err) {
+        debug(err);
+      } else {
+        if (count > 0)
+          debug('Stories expired: ' + count);
+      }
+    });
+  } catch (err) {
+    debug(err);
+  }
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
