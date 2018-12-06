@@ -3,8 +3,12 @@
 	margin: 0;
 }
 
-p, button, hr {
+p, button, hr, .margin {
   margin: 10px;
+}
+
+.half-margin {
+	margin: 5px;
 }
 
 article, aside, canvas, figcaption,
@@ -37,11 +41,18 @@ a {
   color: #00B7FF;
 }
 
+#nanowiki-top {
+	font-size: 24pt;
+	display: flex;
+	align-items: center;
+	align-content: center;
+	position: relative;
+}
+
 #nanowiki-header {
   display: flex;
   align-items: center;
   align-content: center;
-  font-size: 24pt;
 }
 
 #nanowiki-icon {
@@ -53,6 +64,12 @@ a {
 
 #nanowiki-title {
   display: inline-block;
+}
+
+#nanowiki-search {
+	display: flex;
+	position: absolute;
+	right: 10px;
 }
 
 #nanowiki-footer {
@@ -113,4 +130,52 @@ a {
 	vertical-align: middle;
 	padding-left: 10px;
 	padding-right: 10px;
+}
+
+#nanowiki-search-results {
+	padding-bottom: 10px;
+}
+
+a.search-result:link {
+	color: #1ABC9C;
+	text-decoration: none;
+}
+
+a.search-result:visited {
+	color: #1ABC9C;
+	text-decoration: none;
+}
+
+a.search-result:hover {
+	color: #1ABC9C;
+	text-decoration: underline;
+}
+
+a.search-result:active {
+	color: #1ABC9C;
+	text-decoration: underline;
+}
+
+a.search-page:link {
+	color: #1ABC9C;
+	text-decoration: none;
+}
+
+a.search-page:visited {
+	color: #1ABC9C;
+	text-decoration: none;
+}
+
+a.search-page:hover {
+	color: #1ABC9C;
+	text-decoration: underline;
+}
+
+a.search-page:active {
+	color: #1ABC9C;
+	text-decoration: underline;
+}
+
+.search-current-page {
+	text-decoration: underline;
 }

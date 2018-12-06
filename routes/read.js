@@ -13,7 +13,7 @@ function readRouter(model, error) {
       } else {
         res.render('read', {
           app_title: 'nanowiki',
-          page_title: 'nanowiki - ' + story.title,
+          page_title: story.title + ' - nanowiki',
           story_title: story.title,
           read_id: readId
         });

@@ -23,6 +23,7 @@ function createApp(model) {
   var indexRouter = require('./routes/index')(model, error);
   var editRouter = require('./routes/edit')(model, error);
   var readRouter = require('./routes/read')(model, error);
+  var searchRouter = require('./routes/search')(model, error);
 
   var app = express();
 
@@ -36,6 +37,7 @@ function createApp(model) {
   app.use('/', indexRouter);
   app.use('/edit', editRouter);
   app.use('/read', readRouter);
+  app.use('/search', searchRouter);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

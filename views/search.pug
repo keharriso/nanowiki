@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	div#nanowiki-search-results
+		h1.margin.huge-font Search results:
+		each result in results
+			p
+				a.search-result.big-font(href='/read?id=' + result.readId)= result.title
+		else
+			p The search found no matching stories.
+		if pageCount > 0
+			hr
+			span.big-font.margin Page:
+			- for (var i = 0; i < pageCount; ++i)
+				if i === page
+					span.search-current-page.big-font.half-margin= i+1
+				else
+					a.search-page.big-font.half-margin(href='/search?query=' + query + '&page=' + i)= i+1
