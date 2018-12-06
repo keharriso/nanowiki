@@ -54,7 +54,11 @@ function sendStory(client, type, id) {
 var watchedStories = {};
 var io = require('socket.io')(server);
 io.on('connection', function(client) {
+  var connection = client.request.connection;
+  var address = connection.remoteAddress + ':' + connection.remotePort;
+  debug('Connection from [' + address + ']');
   client.on('disconnect', function() {
+    debug('Disconnect from [' + address + ']');
     delete watchedStories[client.id];
   });
   client.on('CreateStory', function() {
@@ -62,11 +66,13 @@ io.on('connection', function(client) {
       if (err) {
         debug(err);
       } else {
+        debug('Create story by [' + address + '] (edit/' + story.editId + ')');
         client.emit('EditStory', story.editId);
       }
     });
   });
   client.on('WatchStory', function(type, id) {
+    debug('Watch story by [' + address + '] (' + type + '/' + id + ')');
     var watched = watchedStories[client.id];
     if (watched)
       client.leave(watched);
@@ -84,6 +90,7 @@ io.on('connection', function(client) {
         if (err) {
           debug(err);
         } else {
+          debug('Change title by [' + address + '] (edit/' + id + '): "' + title + '"');
           io.to('edit/' + story.editId).emit('ChangeTitle', title);
           io.to('read/' + story.readId).emit('ChangeTitle', title);
         }
@@ -94,6 +101,7 @@ io.on('connection', function(client) {
       if (err) {
         debug(err);
       } else {
+        debug('Delete story by [' + address + '] (edit/' + id + ')');
         io.to('edit/' + story.editId).emit('DeleteStory');
         io.to('read/' + story.readId).emit('DeleteStory');
       }
@@ -125,10 +133,12 @@ io.on('connection', function(client) {
             if (err) {
               debug(err);
             } else {
+              var entryId = story.entries[i + 1].id;
+              debug('Add entry by [' + address + '] (edit/' + editId + '): entry/' + entryId);
               io.to('edit/' + story.editId).emit('AddEntry',
-                  story.entries[i + 1].id, previous, author, content);
+                  entryId, previous, author, content);
               io.to('read/' + story.readId).emit('AddEntry',
-                  story.entries[i + 1].id, previous, author, content);
+                  entryId, previous, author, content);
             }
           });
         }
@@ -152,6 +162,7 @@ io.on('connection', function(client) {
                 if (err) {
                   debug(err);
                 } else {
+                  debug('Delete entry by [' + address + '] (edit/' + editId + '): entry/' + entryId);
                   io.to('edit/' + story.editId).emit('DeleteEntry', entryId);
                   io.to('read/' + story.readId).emit('DeleteEntry', entryId);
                 }
@@ -163,6 +174,7 @@ io.on('connection', function(client) {
                 if (err) {
                   debug(err);
                 } else {
+                  debug('Edit entry by [' + address + '] (edit/' + editId + '): entry/' + entryId);
                   io.to('edit/' + story.editId).emit('EditEntry',
                       entryId, author, content);
                   io.to('read/' + story.readId).emit('EditEntry',
