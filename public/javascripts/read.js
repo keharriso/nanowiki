@@ -20,7 +20,7 @@ sock.on('DeleteStory', function() {
 
 var story_body = $('#nanowiki-story-body');
 
-sock.on('AddEntry', function(id, previous, author, content) {
+sock.on('InsertEntry', function(id, previous, author, content) {
   var entryNode = $('<p></p>');
   var entry = {
     id: id,

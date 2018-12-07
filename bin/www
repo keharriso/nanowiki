@@ -44,7 +44,7 @@ function sendStory(client, type, id) {
       client.emit('ChangeTitle', story.title);
       var previousId = null;
       for (var entry of story.entries) {
-        client.emit('AddEntry', entry.id, previousId, entry.author, entry.content);
+        client.emit('InsertEntry', entry.id, previousId, entry.author, entry.content);
         previousId = entry.id;
       }
     }
@@ -92,6 +92,7 @@ io.on('connection', function(client) {
         } else {
           debug('Change title by [' + address + '] (edit/' + id + '): "' + title + '"');
           io.to('edit/' + story.editId).emit('ChangeTitle', title);
+          io.to('write/' + story.writeId).emit('ChangeTitle', title);
           io.to('read/' + story.readId).emit('ChangeTitle', title);
         }
       });
@@ -103,11 +104,12 @@ io.on('connection', function(client) {
       } else {
         debug('Delete story by [' + address + '] (edit/' + id + ')');
         io.to('edit/' + story.editId).emit('DeleteStory');
+        io.to('write/' + story.writeId).emit('DeleteStory');
         io.to('read/' + story.readId).emit('DeleteStory');
       }
     });
   });
-  client.on('AddEntry', function(editId, previous, author, content) {
+  client.on('InsertEntry', function(editId, previous, author, content) {
     if (content.trim() === '')
       return;
     model.Story.findOne({ editId: editId }, function(err, story) {
@@ -135,9 +137,11 @@ io.on('connection', function(client) {
             } else {
               var entryId = story.entries[i + 1].id;
               debug('Add entry by [' + address + '] (edit/' + editId + '): entry/' + entryId);
-              io.to('edit/' + story.editId).emit('AddEntry',
+              io.to('edit/' + story.editId).emit('InsertEntry',
                   entryId, previous, author, content);
-              io.to('read/' + story.readId).emit('AddEntry',
+              io.to('write/' + story.writeId).emit('InsertEntry',
+                  entryId, previous, author, content);
+              io.to('read/' + story.readId).emit('InsertEntry',
                   entryId, previous, author, content);
             }
           });
@@ -145,7 +149,7 @@ io.on('connection', function(client) {
       }
     });
   });
-  client.on('EditEntry', function (editId, entryId, author, content) {
+  client.on('EditEntry', function(editId, entryId, author, content) {
     model.Story.findOne({ editId: editId }, function(err, story) {
       if (err) {
         debug(err);
@@ -164,6 +168,7 @@ io.on('connection', function(client) {
                 } else {
                   debug('Delete entry by [' + address + '] (edit/' + editId + '): entry/' + entryId);
                   io.to('edit/' + story.editId).emit('DeleteEntry', entryId);
+                  io.to('write/' + story.writeId).emit('DeleteEntry', entryId);
                   io.to('read/' + story.readId).emit('DeleteEntry', entryId);
                 }
               });
@@ -177,6 +182,8 @@ io.on('connection', function(client) {
                   debug('Edit entry by [' + address + '] (edit/' + editId + '): entry/' + entryId);
                   io.to('edit/' + story.editId).emit('EditEntry',
                       entryId, author, content);
+                  io.to('write/' + story.writeId).emit('EditEntry',
+                      entryId, author, content);
                   io.to('read/' + story.readId).emit('EditEntry',
                       entryId, author, content);
                 }
@@ -185,6 +192,37 @@ io.on('connection', function(client) {
             break;
           }
         }
+      }
+    });
+  });
+  client.on('AppendEntry', function(writeId, author, content) {
+    model.Story.findOne({ writeId: writeId }, function(err, story) {
+      if (err) {
+        debug(err);
+      } else {
+        var entryCount = story.entries.length;
+        var bottomId = null;
+        if (entryCount > 0)
+          bottomId = story.entries[entryCount-1].id;
+        var entryId = model.generateId();
+        story.entries.push({
+          id: entryId,
+          author: author,
+          content: content
+        });
+        story.save(function(err) {
+          if (err) {
+            debug(err);
+          } else {
+            debug('Append entry by [' + address + '] (write/' + writeId + '): entry/' + entryId);
+            io.to('edit/' + story.editId).emit('InsertEntry',
+                entryId, bottomId, author, content);
+            io.to('write/' + story.writeId).emit('InsertEntry',
+                entryId, bottomId, author, content);
+            io.to('read/' + story.readId).emit('InsertEntry',
+                entryId, bottomId, author, content);
+          }
+        });
       }
     });
   });

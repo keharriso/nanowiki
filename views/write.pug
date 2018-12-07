@@ -3,18 +3,15 @@ extends layout
 block content
 	div#nanowiki-story
 		div#nanowiki-story-title-bar
-			h1#nanowiki-story-title.single-line(contenteditable='true')= story_title
+			h1#nanowiki-story-title= story_title
 			div#nanowiki-story-controls
 				i#nanowiki-story-share.fas.fa-share-alt.action-icon.clickable.huge-font(alt='Share Story (Read Only)', title='Share Story (Read Only)')
-				i#nanowiki-story-write.fas.fa-pencil-alt.action-icon.clickable.huge-font(alt='Write Mode (Append Only)', title='Write Mode (Append Only)')
-				i#nanowiki-story-delete.fas.fa-trash-alt.action-icon.clickable.huge-font(alt='Delete Story', title='Delete Story')
 		div#nanowiki-story-body
 		div#nanowiki-entry-controls
 			div#nanowiki-story-insertion
 				i#nanowiki-story-insert.fas.fa-plus.action-icon.clickable.big-font(alt='Insert Paragraph', title='Insert Paragraph')
 				span as #[span#nanowiki-story-author.single-line(contenteditable='true') anonymous]
 			p#nanowiki-story-compose.single-line(contenteditable='true')
-	script window.editId = '#{edit_id}';
 	script window.writeId = '#{write_id}';
 	script window.readId = '#{read_id}';
-	script(src='/javascripts/edit.js')
+	script(src='/javascripts/write.js')

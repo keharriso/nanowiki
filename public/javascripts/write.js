@@ -1,9 +1,8 @@
 var sock = io();
 
 var entries = [];
-var activeEntry = 'bottom';
 
-sock.emit('WatchStory', 'edit', editId);
+sock.emit('WatchStory', 'write', writeId);
 
 function trapReturn(e) {
   // trap the return key being pressed
@@ -26,17 +25,6 @@ $('.single-line[contenteditable]').keydown(trapReturn);
 var story_title_bar = $('#nanowiki-story-title-bar');
 var story_title = $('#nanowiki-story-title');
 
-story_title.focus(function() {
-	document.execCommand('selectAll', false, null);
-});
-
-story_title.focusout(function() {
-	if (story_title.text().trim() === '') {
-		story_title.text('<untitled>');
-	}
-	sock.emit('ChangeTitle', editId, story_title.text());
-});
-
 sock.on('ChangeTitle', function(title) {
 	var pageTitle = title + ' - nanowiki';
 	if (document.title !== pageTitle) {
@@ -57,14 +45,6 @@ story_author.focusout(function() {
 	}
 });
 
-var delete_story = $('#nanowiki-story-delete');
-
-delete_story.click(function() {
-	if (window.confirm('Are you sure you want to delete this story? This cannot be undone.')) {
-		sock.emit('DeleteStory', editId);
-	}
-});
-
 sock.on('DeleteStory', function() {
 	window.location.href = '/';
 });
@@ -73,12 +53,6 @@ var share_story = $('#nanowiki-story-share');
 
 share_story.click(function() {
   window.open('/read?id=' + readId);
-});
-
-var write_story = $('#nanowiki-story-write');
-
-write_story.click(function() {
-  window.open('/write?id=' + writeId);
 });
 
 var story_body = $('#nanowiki-story-body');
@@ -101,15 +75,7 @@ story_compose.focus(function() {
 
 story_compose.focusout(function() {
 	var content = story_compose.text();
-  var activeId = null;
-  if (activeEntry === 'top' || (activeEntry === 'bottom' && entries.length === 0)) {
-    activeId = null;
-  } else if (activeEntry === 'bottom') {
-    activeId = entries[entries.length-1].id;
-  } else {
-    activeId = activeEntry.id;
-  }
-	sock.emit('InsertEntry', editId, activeId, story_author.text(), content);
+	sock.emit('AppendEntry', writeId, story_author.text(), content);
 	story_compose.text('');
 	story_insertion.show();
 });
@@ -122,22 +88,8 @@ sock.on('InsertEntry', function(id, previous, author, content) {
     content: content,
     node: entryNode
   };
-  entryNode.addClass('single-line');
-  entryNode.attr('contenteditable', 'true');
   entryNode.attr('title', getTooltip(author));
   entryNode.text(content);
-  entryNode.keydown(trapReturn);
-  entryNode.hover(function() {
-    if (!story_compose.is(':focus')) {
-      entry_controls.detach();
-      entryNode.after(entry_controls);
-      activeEntry = entry;
-    }
-  });
-  entryNode.focusout(function() {
-  	var content = entryNode.text();
-  	sock.emit('EditEntry', editId, id, story_author.text(), content);
-  });
   if (!previous) {
     entries.unshift(entry);
     story_body.prepend(entryNode);
@@ -178,13 +130,5 @@ sock.on('DeleteEntry', function (id) {
       entries.splice(i, 1);
       break;
     }
-  }
-});
-
-story_title.hover(function() {
-  if (entries.length > 0 && !story_compose.is(':focus')) {
-    entry_controls.detach();
-    story_title_bar.after(entry_controls);
-    activeEntry = 'top';
   }
 });

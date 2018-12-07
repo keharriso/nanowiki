@@ -22,6 +22,7 @@ function error(req, res, err, message) {
 function createApp(model) {
   var indexRouter = require('./routes/index')(model, error);
   var editRouter = require('./routes/edit')(model, error);
+  var writeRouter = require('./routes/write')(model, error);
   var readRouter = require('./routes/read')(model, error);
   var searchRouter = require('./routes/search')(model, error);
 
@@ -36,6 +37,7 @@ function createApp(model) {
 
   app.use('/', indexRouter);
   app.use('/edit', editRouter);
+  app.use('/write', writeRouter);
   app.use('/read', readRouter);
   app.use('/search', searchRouter);
 

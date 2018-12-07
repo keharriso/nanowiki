@@ -23,6 +23,7 @@ function populate(db) {
 	});
 	schemas.Story = new mongoose.Schema({
 		editId: String,
+		writeId: String,
 		readId: String,
 		title: {type: String, default: ''},
 		created: {type: Date, default: Date.now},
@@ -54,17 +55,24 @@ function populate(db) {
 			if (err) {
 				callback(err);
 			} else {
-				model.Story.generateId('read', function(err, readId) {
+				model.Story.generateId('write', function (err, writeId) {
 					if (err) {
 						callback(err);
 					} else {
-						var story = new model.Story({
-							editId: editId,
-							readId: readId,
-							title: 'My Story',
-							entries: []
+						model.Story.generateId('read', function(err, readId) {
+							if (err) {
+								callback(err);
+							} else {
+								var story = new model.Story({
+									editId: editId,
+									writeId: writeId,
+									readId: readId,
+									title: 'My Story',
+									entries: []
+								});
+								story.save(callback);
+							}
 						});
-						story.save(callback);
 					}
 				});
 			}
