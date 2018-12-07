@@ -2,6 +2,8 @@ var sock = io();
 
 var entries = [];
 
+var story_title = $('#nanowiki-story-title');
+
 sock.emit('WatchStory', 'read', readId);
 
 sock.on('ChangeTitle', function(title) {
