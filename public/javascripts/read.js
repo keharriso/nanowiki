@@ -7,7 +7,7 @@ var story_title = $('#nanowiki-story-title');
 sock.emit('WatchStory', 'read', readId);
 
 sock.on('ChangeTitle', function(title) {
-	var pageTitle = 'nanowiki - ' + title;
+	var pageTitle = title + ' - nanowiki';
 	if (document.title !== pageTitle) {
 		story_title.text(title);
 		document.title = pageTitle;
