@@ -29,6 +29,8 @@ function populate(db) {
 		created: {type: Date, default: Date.now},
 		edited: {type: Date, default: Date.now},
 		viewed: {type: Date, default: Date.now},
+		currentPopularity: {type: Number, default: 0},
+		popularity: {type: Number, default: 0},
 		entries: [entrySchema]
 	});
 	schemas.Story.static('generateId', function(type, callback, depth) {

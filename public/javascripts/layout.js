@@ -10,7 +10,7 @@ function search() {
 	if (searchTerms.length > 0) {
 		for (var i = 0; i < searchTerms.length; ++i)
 			searchTerms[i] = encodeURIComponent(searchTerms[i]);
-		location.href = '/search?query=' + searchTerms.join('+') + '&page=' + 0;
+		location.href = '/search?query=' + searchTerms.join('+') + '&page=' + 0 + '&sort=popularity';
 	}
 }
 

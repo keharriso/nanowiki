@@ -2,20 +2,25 @@ var express = require('express');
 var router = express.Router();
 
 var MAX_SEARCH_TERMS = 32;
-var RESULTS_PER_PAGE = 12;
+var RESULTS_PER_PAGE = 16;
 
 function searchRouter(model, error) {
   /* GET search page. */
   router.get('/', function(req, res, next) {
     var query = req.query.query || '';
     var page = parseInt(req.query.page);
+    var sort = req.query.sort || 'popularity';
     var searchTerms = query.split('+').slice(0, MAX_SEARCH_TERMS);
     var aggregation = [];
     searchTerms.forEach(function (term) {
       aggregation.push({ $match: { title: { $regex: term, $options: 'i' } } });
     });
     aggregation.push({ $project: { readId: 1, title: 1, titleLength: { $strLenCP: '$title' } } });
-    aggregation.push({ $sort: { title: 1 } });
+    if (sort === 'title') {
+      aggregation.push({ $sort: { title: 1 } });
+    } else if (sort === 'popularity') {
+      aggregation.push({ $sort: { popularity: -1 } });
+    }
     aggregation.push({ $project: { readId: 1, title: 1 } })
     aggregation.push({
       $facet: {
@@ -38,7 +43,8 @@ function searchRouter(model, error) {
           page: page,
           resultsPerPage: RESULTS_PER_PAGE,
           count: count,
-          pageCount: pageCount
+          pageCount: pageCount,
+          sort: sort
         });
       }
     });

@@ -47,6 +47,11 @@ function sendStory(client, type, id) {
         client.emit('InsertEntry', entry.id, previousId, entry.author, entry.content);
         previousId = entry.id;
       }
+      ++story.currentPopularity;
+      story.save(function(err) {
+        if (err)
+          debug(err);
+      });
     }
   });
 }
@@ -244,20 +249,35 @@ io.on('connection', function(client) {
  // └───────────────────────── second (0 - 59, OPTIONAL)
 
 // Clean out expired stories every Sunday.
-schedule.scheduleJob("0 0 0 * * 0", function() {
-  try {
-    debug("Cleaning expired stories");
-    model.Story.expire(365, function(err, count) {
-      if (err) {
-        debug(err);
-      } else {
-        if (count > 0)
-          debug('Stories expired: ' + count);
-      }
-    });
-  } catch (err) {
-    debug(err);
-  }
+schedule.scheduleJob('0 0 0 * * 0', function() {
+  debug('Cleaning expired stories');
+  model.Story.expire(365, function(err, count) {
+    if (err) {
+      debug(err);
+    } else {
+      if (count > 0)
+        debug('Stories expired: ' + count);
+    }
+  });
+});
+
+// Calculate popularity every day at midnight.
+schedule.scheduleJob('0 0 0 * * *', function() {
+  debug('Calculating popularity');
+  model.Story.find({}, function(err, stories) {
+    if (err) {
+      debug(err);
+    } else {
+      stories.forEach(function(story) {
+        story.popularity = story.currentPopularity;
+        story.currentPopularity = 0;
+        story.save(function(err) {
+          if (err)
+            debug(err);
+        });
+      });
+    }
+  });
 });
 
 /**

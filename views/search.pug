@@ -1,8 +1,13 @@
 extends layout
 
+mixin search-sort
+	select#nanowiki-search-sort
+		option(value='popularity') popularity
+		option(value='title') title
+
 block content
 	div#nanowiki-search-results
-		h1.margin.huge-font Search results:
+		h1.margin.huge-font Search results – #[span.big-font sort by #[+search-sort]]
 		each result in results
 			p
 				a.search-result.big-font(href='/read?id=' + result.readId)= result.title
@@ -15,4 +20,5 @@ block content
 				if i === page
 					span.search-current-page.big-font.half-margin= i+1
 				else
-					a.search-page.big-font.half-margin(href='/search?query=' + query + '&page=' + i)= i+1
+					a.search-page.big-font.half-margin(href='/search?query=' + query + '&page=' + i + '&sort=' + sort)= i+1
+	script(src='/javascripts/search.js')
