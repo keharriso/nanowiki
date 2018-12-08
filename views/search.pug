@@ -11,6 +11,7 @@ block content
 		each result in results
 			p
 				a.search-result.big-font(href='/read?id=' + result.readId)= result.title
+				span= ' - ' + result.content
 		else
 			p The search found no matching stories.
 		if pageCount > 0

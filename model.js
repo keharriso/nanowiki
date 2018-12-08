@@ -104,6 +104,47 @@ function populate(db) {
 		var id = crypto.randomBytes(9).toString('base64');
 		return id.replace('+', '-').replace('/', '_');
 	};
+	model.getFeaturedStories = function(callback) {
+		model.Story.find({}, { readId: 1, title: 1, entries: 1 },
+			{
+				skip: 0,
+				limit: 5,
+				sort: { popularity: -1 }
+			}, function(err, featuredStories) {
+				if (err) {
+					callback(err);
+				} else {
+					var featured = [];
+					for (var i = 0; i < featuredStories.length; ++i) {
+						var story = featuredStories[i];
+						var content = model.getContent(story, 400);
+						featured.push({
+							readId: story.readId,
+							title: story.title,
+							content: content
+						});
+					}
+					callback(null, featured);
+				}
+			});
+	};
+	model.getContent = function(story, size) {
+		var content = '';
+		for (var i = 0; i < story.entries.length; ++i) {
+			var entry = story.entries[i];
+			if (i > 0) {
+				content += ' ';
+			}
+			content += entry.content;
+			if (content.length >= size) {
+				break;
+			}
+		}
+		if (content.length > size) {
+			content = content.substring(0, size-3) + '...';
+		}
+		return content;
+	};
 	return model;
 }
 

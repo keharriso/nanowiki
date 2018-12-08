@@ -56,6 +56,13 @@ function sendStory(client, type, id) {
   });
 }
 
+var featuredStories = [];
+model.getFeaturedStories(function(err, featured) {
+  if (err)
+    debug(err)
+  else
+    featuredStories = featured;
+});
 var watchedStories = {};
 var io = require('socket.io')(server);
 io.on('connection', function(client) {
@@ -231,6 +238,9 @@ io.on('connection', function(client) {
       }
     });
   });
+  client.on('GetFeaturedStories', function() {
+    client.emit('GetFeaturedStories', featuredStories);
+  });
 });
 
 /**
@@ -262,7 +272,8 @@ schedule.scheduleJob('0 0 0 * * 0', function() {
 });
 
 // Calculate popularity every day at midnight.
-schedule.scheduleJob('0 0 0 * * *', function() {
+// schedule.scheduleJob('0 0 0 * * *', function() {
+schedule.scheduleJob('0 * * * * *', function() {
   debug('Calculating popularity');
   model.Story.find({}, function(err, stories) {
     if (err) {
@@ -275,6 +286,12 @@ schedule.scheduleJob('0 0 0 * * *', function() {
           if (err)
             debug(err);
         });
+      });
+      model.getFeaturedStories(function(err, featured) {
+        if (err)
+          debug(err)
+        else
+          featuredStories = featured;
       });
     }
   });
