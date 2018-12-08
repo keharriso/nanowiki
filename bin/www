@@ -35,6 +35,7 @@ var server = http.createServer(app);
  * Set up Socket.IO server.
  */
 
+var editingEntries = {};
 function sendStory(client, type, id) {
   idName = type + 'Id';
   model.Story.findOne({ [idName]: id }, function (err, story) {
@@ -46,6 +47,11 @@ function sendStory(client, type, id) {
       for (var entry of story.entries) {
         client.emit('InsertEntry', entry.id, previousId, entry.author, entry.content);
         previousId = entry.id;
+      }
+      for (var clientId in editingEntries) {
+        var edit = editingEntries[clientId];
+        var startEdit = { clientId: clientId, entryId: edit.entryId, author: edit.author };
+        client.emit('StartEdit', startEdit);
       }
       ++story.currentPopularity;
       story.save(function(err) {
@@ -71,7 +77,20 @@ io.on('connection', function(client) {
   debug('Connection from [' + address + ']');
   client.on('disconnect', function() {
     debug('Disconnect from [' + address + ']');
+    var watched = watchedStories[client.id];
+    var edit = editingEntries[client.id];
+    if (watched && edit) {
+      watched = watched.split('/');
+      model.Story.findOne({ [watched[0] + 'Id']: watched[1] },
+        { editId: 1, writeId: 1, readId: 1 },
+        function(err, story) {
+          io.to('edit/' + story.editId).emit('EndEdit', client.id);
+          io.to('write/' + story.writeId).emit('EndEdit', client.id);
+          io.to('read/' + story.readId).emit('EndEdit', client.id);
+        });
+    }
     delete watchedStories[client.id];
+    delete editingEntries[client.id];
   });
   client.on('CreateStory', function() {
     var story = model.Story.create(function(err, story) {
@@ -240,6 +259,49 @@ io.on('connection', function(client) {
   });
   client.on('GetFeaturedStories', function() {
     client.emit('GetFeaturedStories', featuredStories);
+  });
+  client.on('StartEdit', function(mode, storyId, entryId, author) {
+    if (mode === 'write') {
+      entryId = 'bottom';
+    } else if (mode !== 'edit') {
+      return;
+    }
+    var edit = {
+      mode: mode,
+      storyId: storyId,
+      entryId: entryId,
+      author: author
+    };
+    editingEntries[client.id] = edit;
+    model.Story.findOne({ [mode + 'Id']: storyId },
+      { editId: 1, writeId: 1, readId: 1 },
+      function(err, story) {
+        if (err) {
+          debug(err);
+        } else {
+          var startEdit = { clientId: client.id, entryId: entryId, author: author };
+          client.broadcast.to('edit/' + story.editId).emit('StartEdit', startEdit);
+          client.broadcast.to('write/' + story.writeId).emit('StartEdit', startEdit);
+          client.broadcast.to('read/' + story.readId).emit('StartEdit', startEdit);
+        }
+      });
+  });
+  client.on('EndEdit', function(mode, storyId, entryId) {
+    var edit = editingEntries[client.id];
+    if (edit) {
+      model.Story.findOne({ [mode + 'Id']: storyId },
+        { editId: 1, writeId: 1, readId: 1 },
+        function(err, story) {
+          if (err) {
+            debug(err);
+          } else {
+            client.broadcast.to('edit/' + story.editId).emit('EndEdit', client.id);
+            client.broadcast.to('write/' + story.writeId).emit('EndEdit', client.id);
+            client.broadcast.to('read/' + story.readId).emit('EndEdit', client.id);
+          }
+        });
+      delete editingEntries[client.id];
+    }
   });
 });
 

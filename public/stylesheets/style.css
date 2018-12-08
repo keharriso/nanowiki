@@ -126,6 +126,11 @@ a {
 	color: #1ABC9C;
 }
 
+.nanowiki-edit-node {
+	color: #1ABC9C;
+	margin-left: 20px;
+}
+
 .action-icon {
 	vertical-align: middle;
 	padding-left: 10px;

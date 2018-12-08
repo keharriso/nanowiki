@@ -97,6 +97,10 @@ story_compose.focus(function() {
 	story_insertion.hide();
 	story_compose.text('compose here');
 	document.execCommand('selectAll', false, null);
+  var activeId = activeEntry;
+  if (activeEntry !== 'top' && activeEntry !== 'bottom')
+    activeId = activeEntry.id;
+  sock.emit('StartEdit', 'edit', editId, activeId, story_author.text());
 });
 
 story_compose.focusout(function() {
@@ -112,6 +116,45 @@ story_compose.focusout(function() {
 	sock.emit('InsertEntry', editId, activeId, story_author.text(), content);
 	story_compose.text('');
 	story_insertion.show();
+  sock.emit('EndEdit', 'edit', editId, activeEntry);
+});
+
+var edits = {};
+
+function removeEdit(clientId) {
+  if (edits[clientId]) {
+    var edit = edits[clientId];
+    edit.node.remove();
+    delete edits[clientId];
+  }
+}
+
+function addEdit(edit) {
+  edit.node = $('<p></p>');
+  edit.node.addClass('nanowiki-edit-node');
+  edit.node.text('... ' + edit.author + ' is writing ...');
+  if (edit.entryId === 'top') {
+    story_title_bar.after(edit.node);
+  } else if (edit.entryId === 'bottom') {
+    story_body.after(edit.node);
+  } else {
+    for (var i = 0; i < entries.length; ++i) {
+      if (entries[i].id === edit.entryId) {
+        entries[i].node.after(edit.node);
+        break;
+      }
+    }
+  }
+  edits[edit.clientId] = edit;
+}
+
+sock.on('StartEdit', function(edit) {
+  removeEdit(edit.clientId);
+  addEdit(edit);
+});
+
+sock.on('EndEdit', function(clientId) {
+  removeEdit(clientId);
 });
 
 sock.on('InsertEntry', function(id, previous, author, content) {
@@ -134,9 +177,13 @@ sock.on('InsertEntry', function(id, previous, author, content) {
       activeEntry = entry;
     }
   });
+  entryNode.focus(function() {
+    sock.emit('StartEdit', 'edit', editId, entry.id, author);
+  });
   entryNode.focusout(function() {
   	var content = entryNode.text();
   	sock.emit('EditEntry', editId, id, story_author.text(), content);
+    sock.emit('EndEdit', 'edit', editId, entry.id);
   });
   if (!previous) {
     entries.unshift(entry);
@@ -184,7 +231,7 @@ sock.on('DeleteEntry', function (id) {
 story_title.hover(function() {
   if (entries.length > 0 && !story_compose.is(':focus')) {
     entry_controls.detach();
-    story_title_bar.after(entry_controls);
+    story_body.before(entry_controls);
     activeEntry = 'top';
   }
 });

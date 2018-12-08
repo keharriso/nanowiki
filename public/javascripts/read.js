@@ -2,6 +2,10 @@ var sock = io();
 
 var entries = [];
 
+function getTooltip(author) {
+  return 'written by ' + author;
+}
+
 var story_title = $('#nanowiki-story-title');
 
 sock.emit('WatchStory', 'read', readId);
@@ -20,6 +24,44 @@ sock.on('DeleteStory', function() {
 
 var story_body = $('#nanowiki-story-body');
 
+var edits = {};
+
+function removeEdit(clientId) {
+	if (edits[clientId]) {
+		var edit = edits[clientId];
+		edit.node.remove();
+		delete edits[clientId];
+	}
+}
+
+function addEdit(edit) {
+  edit.node = $('<p></p>');
+  edit.node.addClass('nanowiki-edit-node');
+  edit.node.text('... ' + edit.author + ' is writing ...');
+  if (edit.entryId === 'top') {
+    story_title_bar.after(edit.node);
+  } else if (edit.entryId === 'bottom') {
+    story_body.after(edit.node);
+  } else {
+    for (var i = 0; i < entries.length; ++i) {
+      if (entries[i].id === edit.entryId) {
+        entries[i].node.after(edit.node);
+        break;
+      }
+    }
+  }
+  edits[edit.clientId] = edit;
+}
+
+sock.on('StartEdit', function(edit) {
+	removeEdit(edit.clientId);
+	addEdit(edit);
+});
+
+sock.on('EndEdit', function(clientId) {
+	removeEdit(clientId);
+});
+
 sock.on('InsertEntry', function(id, previous, author, content) {
   var entryNode = $('<p></p>');
   var entry = {
@@ -28,6 +70,7 @@ sock.on('InsertEntry', function(id, previous, author, content) {
     content: content,
     node: entryNode
   };
+	entryNode.attr('title', getTooltip(author));
   entryNode.text(content);
   if (!previous) {
     entries.unshift(entry);

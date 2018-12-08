@@ -71,6 +71,7 @@ story_compose.focus(function() {
 	story_insertion.hide();
 	story_compose.text('compose here');
 	document.execCommand('selectAll', false, null);
+  sock.emit('StartEdit', 'write', writeId, 'bottom', story_author.text());
 });
 
 story_compose.focusout(function() {
@@ -78,6 +79,45 @@ story_compose.focusout(function() {
 	sock.emit('AppendEntry', writeId, story_author.text(), content);
 	story_compose.text('');
 	story_insertion.show();
+  sock.emit('EndEdit', 'write', writeId, 'bottom');
+});
+
+var edits = {};
+
+function removeEdit(clientId) {
+  if (edits[clientId]) {
+    var edit = edits[clientId];
+    edit.node.remove();
+    delete edits[clientId];
+  }
+}
+
+function addEdit(edit) {
+  edit.node = $('<p></p>');
+  edit.node.addClass('nanowiki-edit-node');
+  edit.node.text('... ' + edit.author + ' is writing ...');
+  if (edit.entryId === 'top') {
+    story_title_bar.after(edit.node);
+  } else if (edit.entryId === 'bottom') {
+    story_body.after(edit.node);
+  } else {
+    for (var i = 0; i < entries.length; ++i) {
+      if (entries[i].id === edit.entryId) {
+        entries[i].node.after(edit.node);
+        break;
+      }
+    }
+  }
+  edits[edit.clientId] = edit;
+}
+
+sock.on('StartEdit', function(edit) {
+  removeEdit(edit.clientId);
+  addEdit(edit);
+});
+
+sock.on('EndEdit', function(clientId) {
+  removeEdit(clientId);
 });
 
 sock.on('InsertEntry', function(id, previous, author, content) {
