@@ -175,6 +175,9 @@ sock.on('InsertEntry', function(id, previous, author, content) {
       entry_controls.detach();
       entryNode.after(entry_controls);
       activeEntry = entry;
+      if (story_author.text().trim() === '') {
+        story_author.text('anonymous');
+      }
     }
   });
   entryNode.focus(function() {
@@ -233,5 +236,8 @@ story_title.hover(function() {
     entry_controls.detach();
     story_body.before(entry_controls);
     activeEntry = 'top';
+    if (story_author.text().trim() === '') {
+      story_author.text('anonymous');
+    }
   }
 });
