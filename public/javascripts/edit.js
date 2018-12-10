@@ -20,7 +20,7 @@ function getTooltip(author) {
   return 'written by ' + author;
 }
 
-// Keep title on a  single line
+// Keep title on a single line
 $('.single-line[contenteditable]').keydown(trapReturn);
 
 var story_title_bar = $('#nanowiki-story-title-bar');
@@ -95,7 +95,7 @@ story_insert.click(function() {
 
 story_compose.focus(function() {
 	story_insertion.hide();
-	story_compose.text('compose here');
+	story_compose.text('');
 	document.execCommand('selectAll', false, null);
   var activeId = activeEntry;
   if (activeEntry !== 'top' && activeEntry !== 'bottom')
