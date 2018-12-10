@@ -96,6 +96,7 @@ story_insert.click(function() {
 story_compose.focus(function() {
 	story_insertion.hide();
 	story_compose.text('');
+  story_compose.attr('placeholder', 'Compose here.');
 	document.execCommand('selectAll', false, null);
   var activeId = activeEntry;
   if (activeEntry !== 'top' && activeEntry !== 'bottom')
@@ -115,6 +116,7 @@ story_compose.focusout(function() {
   }
 	sock.emit('InsertEntry', editId, activeId, story_author.text(), content);
 	story_compose.text('');
+  story_compose.removeAttr('placeholder');
 	story_insertion.show();
   sock.emit('EndEdit', 'edit', editId, activeEntry);
 });

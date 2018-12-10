@@ -70,6 +70,7 @@ story_insert.click(function() {
 story_compose.focus(function() {
 	story_insertion.hide();
 	story_compose.text('');
+  story_compose.attr('placeholder', 'Compose here.');
 	document.execCommand('selectAll', false, null);
   sock.emit('StartEdit', 'write', writeId, 'bottom', story_author.text());
 });
@@ -78,6 +79,7 @@ story_compose.focusout(function() {
 	var content = story_compose.text();
 	sock.emit('AppendEntry', writeId, story_author.text(), content);
 	story_compose.text('');
+  story_compose.removeAttr('placeholder');
 	story_insertion.show();
   sock.emit('EndEdit', 'write', writeId, 'bottom');
 });

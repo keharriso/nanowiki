@@ -187,3 +187,10 @@ a.search-page:active {
 	margin-left: 30px;
 	margin-bottom: 10px;
 }
+
+/* Placeholder text for contenteditable elements */
+[contenteditable=true]:empty:before{
+  content: attr(placeholder);
+  display: block; /* For Firefox */
+	color: #888888;
+}
