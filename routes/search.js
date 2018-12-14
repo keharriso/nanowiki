@@ -16,13 +16,12 @@ function searchRouter(model, error) {
     searchTerms.forEach(function (term) {
       aggregation.push({ $match: { title: { $regex: term, $options: 'i' } } });
     });
-    aggregation.push({ $project: { readId: 1, title: 1, titleLength: { $strLenCP: '$title' }, entries: 1 } });
+    aggregation.push({ $project: { readId: 1, title: 1, entries: 1, popularity: 1 } });
     if (sort === 'title') {
       aggregation.push({ $sort: { title: 1 } });
     } else if (sort === 'popularity') {
       aggregation.push({ $sort: { popularity: -1 } });
     }
-    aggregation.push({ $project: { readId: 1, title: 1, entries: 1 } });
     aggregation.push({
       $facet: {
         results: [{ $skip: page * RESULTS_PER_PAGE }, { $limit: RESULTS_PER_PAGE }],

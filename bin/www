@@ -340,20 +340,20 @@ schedule.scheduleJob('0 0 0 * * *', function() {
     if (err) {
       debug(err);
     } else {
+      promises = [];
       stories.forEach(function(story) {
         story.popularity = story.currentPopularity;
         story.currentPopularity = 0;
-        story.save(function(err) {
+        promises.push(story.save());
+      });
+      Promise.all(promises).then(function() {
+        model.getFeaturedStories(function(err, featured) {
           if (err)
             debug(err);
+          else
+            featuredStories = featured;
         });
-      });
-      model.getFeaturedStories(function(err, featured) {
-        if (err)
-          debug(err)
-        else
-          featuredStories = featured;
-      });
+      }).catch(debug);
     }
   });
 });

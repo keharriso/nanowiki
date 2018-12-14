@@ -1,5 +1,6 @@
 var crypto = require('crypto');
 var mongoose = require('mongoose');
+    mongoose.promise = global.Promise;
 var debug = require('debug')('nanowiki:model');
 
 function model(mongoURI) {
