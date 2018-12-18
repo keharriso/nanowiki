@@ -331,6 +331,14 @@ schedule.scheduleJob('0 0 0 * * 0', function() {
         debug('Stories expired: ' + count);
     }
   });
+  model.Story.expireEmpty(7, function(err, count) {
+    if (err) {
+      debug(err);
+    } else {
+      if (count > 0)
+        debug('Empty stories expired: ' + count);
+    }
+  });
 });
 
 // Calculate popularity every day at midnight.
