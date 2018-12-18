@@ -1,12 +1,15 @@
 # nanowiki
 
-Minimalist collaborative writing platform [nanowiki.xyz](http://nanowiki.xyz).
+## About
+
+A minimalist collaborative writing platform: [nanowiki.xyz](http://nanowiki.xyz)
 
 Create stories with your friends. No login required!
 
 ## License
 
-nanowiki - Minimalist collaborative writing platform (http://nanowiki.xyz)
+```
+nanowiki - A minimalist collaborative writing platform (http://nanowiki.xyz)
 Copyright (C) 2018  Kevin Harrison
 
 This program is free software: you can redistribute it and/or modify
@@ -21,3 +24,4 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+```
