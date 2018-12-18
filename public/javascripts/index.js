@@ -14,9 +14,8 @@ featured_stories_header.addClass('big-font');
 featured_stories_header.text('Featured stories:');
 featured_stories.append(featured_stories_header);
 
-sock.emit('GetFeaturedStories');
-
 sock.on('GetFeaturedStories', function(stories) {
+	console.log(stories);
 	stories.forEach(function(story) {
 		var storyItem = $('<li></li>');
 		storyItem.addClass('featured-story');
@@ -32,3 +31,5 @@ sock.on('GetFeaturedStories', function(stories) {
 		featured_stories.append(storyItem);
 	});
 });
+
+sock.emit('GetFeaturedStories');
