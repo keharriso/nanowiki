@@ -39,7 +39,6 @@ aside,
 canvas,
 figcaption,
 figure,
-footer,
 header,
 hgroup,
 output,
@@ -69,19 +68,22 @@ body {
 	grid-template-areas:
 		"top"
 		"body";
-	grid-template-rows: auto 100%;
+	grid-template-rows: 48px calc(100% - 48px);
 	overflow: hidden;
 	font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
 	color: #CCCCCC;
 }
 
 #nanowiki-body {
-	width: 95vw;
-	margin: 10px auto;
-	padding: 10px;
-	padding-bottom: 100px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
 	background-color: #282C34;
 	grid-area: body;
+	display: grid;
+	height: 100%;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr 48px;
 	overflow: auto;
 }
 
@@ -172,15 +174,15 @@ a {
 	display: none;
 }
 #nanowiki-footer {
-	margin: 0;
+	height: 48px;
+	width: 100%;
+	margin: auto;
 	padding: 0;
-	padding: 10px;
 	justify-content: center;
 	align-items: center;
 	display: flex;
 	color: #CCCCCC;
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-	grid-area: footer;
 }
 
 .big-font {
@@ -314,6 +316,8 @@ a.search-page:active {
 	flex-flow: row wrap;
 	justify-content: space-between;
 	align-items: center;
+	width: 100%;
+	margin: 0;
 }
 #new-stories-header a {
 	color: #1ABC9C;
@@ -325,6 +329,8 @@ a.search-page:active {
 	grid-column-gap: 0;
 	grid-row-gap: 10px;
 	max-width: 1200px;
+	width: 95%;
+	align-items: flex-start;
 	margin: 0 auto;
 }
 #nanowiki-featured-stories,
@@ -333,8 +339,9 @@ a.search-page:active {
 	display: flex;
 	flex-flow: column;
 	padding: 10px;
-	max-width: 750px;
-	margin: auto;
+	max-width: 1200px;
+	width: calc(100% - 20px);
+	margin: 0 auto;
 }
 
 .featured-story,
@@ -416,6 +423,7 @@ a.search-page:active {
 	}
 	#nanowiki-stories {
 		grid-template-columns: 1fr;
+		width: 95%;
 	}
 	#nanowiki-search-box {
 		margin-bottom: 1em;
@@ -436,7 +444,6 @@ a.search-page:active {
 	}
 	#nanowiki-body {
 		padding: 0;
-		padding-bottom: 50%;
 		width: inherit;
 		margin: 0;
 	}
