@@ -122,12 +122,12 @@ function populate(db) {
 		var id = crypto.randomBytes(9).toString('base64');
 		return id.replace('+', '-').replace('/', '_');
 	};
-	model.getFeaturedStories = function(callback) {
-		model.Story.find({}, { readId: 1, title: 1, entries: 1 },
+	model.getTopStories = function(count, sort, callback) {
+		model.Story.find({ entries: { $exists: true, $ne: [] } }, { readId: 1, title: 1, entries: 1 },
 			{
 				skip: 0,
-				limit: 5,
-				sort: { popularity: -1 }
+				limit: count,
+				sort: sort
 			}, function(err, featuredStories) {
 				if (err) {
 					callback(err);
@@ -135,7 +135,7 @@ function populate(db) {
 					var featured = [];
 					for (var i = 0; i < featuredStories.length; ++i) {
 						var story = featuredStories[i];
-						var content = model.getContent(story, 800);
+						var content = model.getContent(story, 400);
 						featured.push({
 							readId: story.readId,
 							title: story.title,

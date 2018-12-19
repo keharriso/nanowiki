@@ -36,7 +36,7 @@ function searchRouter(model, error) {
         var count = results.totalCount[0] ? results.totalCount[0].count : 0;
         var pageCount = Math.min(MAX_PAGES, Math.ceil(count / RESULTS_PER_PAGE));
         results.results.forEach(function(result) {
-          result.content = model.getContent(result, 300);
+          result.content = model.getContent(result, 400);
         });
         res.render('search', {
           app_title: 'nanowiki',
