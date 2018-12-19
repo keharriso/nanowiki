@@ -324,7 +324,7 @@ a.search-page:active {
 #nanowiki-stories {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-column-gap: 10px;
+	grid-column-gap: 0;
 	grid-row-gap: 10px;
 	max-width: 1200px;
 	width: 100%;
