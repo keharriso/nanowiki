@@ -79,6 +79,7 @@ body {
 	width: 95vw;
 	margin: 10px auto;
 	padding: 10px;
+	padding-bottom: 100px;
 	background-color: #282C34;
 	grid-area: body;
 	overflow: auto;
@@ -95,7 +96,8 @@ a {
 	position: relative;
 	grid-area: top;
 	padding: 0;
-	margin: 0;
+	margin: 0 auto;
+	width: 95vw;
 }
 
 #nanowiki-header {
@@ -168,7 +170,7 @@ a {
 #nanowiki-footer {
 	margin: 0;
 	padding: 0;
-	height: 48px;
+	padding: 10px;
 	justify-content: center;
 	align-items: center;
 	display: flex;
