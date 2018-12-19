@@ -337,9 +337,9 @@ a.search-page:active {
 	display: flex;
 	flex-flow: column;
 	padding: 10px;
-	max-width: 750px;
+	max-width: 1200px;
 	width: calc(100% - 20px);
-	margin: 0;
+	margin: 0 auto;
 }
 
 .featured-story,
@@ -421,6 +421,7 @@ a.search-page:active {
 	}
 	#nanowiki-stories {
 		grid-template-columns: 1fr;
+		width: 95%;
 	}
 	#nanowiki-search-box {
 		margin-bottom: 1em;
