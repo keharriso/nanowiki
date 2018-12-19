@@ -309,13 +309,15 @@ a.search-page:active {
 #nanowiki-stories {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	grid-column-gap: 0;
+	grid-row-gap: 10px;
 }
 #nanowiki-featured-stories,
 #nanowiki-search-results, 
 #nanowiki-new-stories {
 	display: flex;
 	flex-flow: column;
-	padding: 1em;
+	padding: 10px;
 	max-width: 750px;
 	margin: auto;
 }
@@ -326,7 +328,7 @@ a.search-page:active {
 	line-height: 1.5rem;
 	max-height: 100px;
 	font-size: 1.2rem;
-	margin: 10px auto;
+	margin: 10px 0;
 	padding: 10px;
 	overflow: hidden;
 	list-style-type: none;
@@ -403,7 +405,6 @@ a.search-page:active {
 	#nanowiki-search-box {
 		margin-bottom: 1em;
 	}
-
 	#nanowiki-intro {
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr auto;
@@ -432,6 +433,11 @@ a.search-page:active {
 	}
 	.big-font {
 		font-size: 1.1rem;
+	}
+	
+	.featured-story,
+	.search-result, .new-story {
+		margin: 5px auto;
 	}
 }
 
