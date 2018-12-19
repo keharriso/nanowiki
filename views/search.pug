@@ -2,8 +2,10 @@ extends layout
 
 mixin search-sort
 	select#nanowiki-search-sort
+		option(value='new') new
 		option(value='popularity') popularity
 		option(value='title') title
+		option(value='updated') updated
 
 block content
 	div#nanowiki-search-results

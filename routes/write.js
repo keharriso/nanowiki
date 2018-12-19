@@ -19,7 +19,6 @@ function writeRouter(model, error) {
           read_id: story.readId
         });
         story.viewed = Date.now();
-        story.edited = Date.now();
         story.save();
       }
     });
