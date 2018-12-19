@@ -155,7 +155,7 @@ a {
 	display: grid;
 	grid-template-columns: 1fr;
 	align-items: center;
-	max-width: 1200px;
+	max-width: 1000px;
 }
 
 #nanowiki-create-story-container {
