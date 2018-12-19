@@ -7,6 +7,26 @@ p, button, hr, .margin {
   margin: 10px;
 }
 
+button {
+	background: #1ABC9C;
+	border: none;
+	padding: 5px;
+	color: #21252B;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: opacity .3s;
+}
+
+button:hover {
+	opacity: .8;
+}
+
+hr {
+	display: block;
+	border: 2px solid #ccc;
+	border-radius: 5px;
+}
+
 .half-margin {
 	margin: 5px;
 }
@@ -28,12 +48,21 @@ html {
   background-color: #21252B;
 }
 
+body {
+	width: 100vw;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	line-height: 1.5;
+	display: grid;
+	grid-template-rows: 1fr 48px;
+}
+
 #nanowiki-body {
-  width: 800px;
-  max-width: 800px;
+  width: 95vw;
   margin: 10px auto;
-	padding: 10px 0px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	padding: 10px;
+  font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #282C34;
   color: #CCCCCC;
 }
@@ -64,7 +93,8 @@ a {
 }
 
 #nanowiki-title {
-  display: inline-block;
+	display: inline-block;
+	font-size: 2rem;
 }
 
 #nanowiki-search {
@@ -72,21 +102,45 @@ a {
 	position: absolute;
 	right: 10px;
 }
+#nanowiki-search-box {
+	padding: 5px 10px;
+	border: 2px solid #ccc;
+	border-radius: 5px;
+}
+
+#nanowiki-intro {
+	width: 65%;
+	margin: 1em auto;
+	padding: 1em;
+	text-align: center;
+}
+
+#nanowiki-create-story-container {
+	display: flex;
+	justify-content: center;
+	flex-flow: column;
+	align-items: center;
+}
+#nanowiki-create-story {
+	width: max-content;
+}
 
 #nanowiki-footer {
-	margin-bottom: 10px;
-  justify-content: center;
+	margin: 0;
+	padding: 10px;
+	justify-content: center;
+	align-items: center;
   display: flex;
 	color: #CCCCCC;
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .big-font {
-  font-size: 16pt;
+  font-size: 1.5rem;
 }
 
 .huge-font {
-  font-size: 24pt;
+  font-size: 2rem;
 }
 
 .clickable {
@@ -99,6 +153,8 @@ a {
 
 #nanowiki-story {
 	margin: 20px;
+	width: 90%;
+	padding: 1em;
 }
 
 #nanowiki-story-title-bar {
@@ -108,6 +164,15 @@ a {
 
 #nanowiki-story-title {
 	display: inline-block;
+	font-size: 2rem;
+	line-height: 2.5;
+}
+
+#nanowiki-story p {
+	width: 90%;
+	margin: 5px auto 1rem auto;
+	font-size: 1.2rem;
+	line-height: 1.75;
 }
 
 #nanowiki-story-controls {
@@ -183,9 +248,14 @@ a.search-page:active {
 	text-decoration: underline;
 }
 
+#nanowiki-featured-stories {
+	display: flex;
+	flex-flow: column;
+	padding: 1em;
+}
 .featured-story {
-	margin-left: 30px;
-	margin-bottom: 10px;
+	margin: 0 0 30px 30px;
+	list-style-type: none;
 }
 
 /* Placeholder text for contenteditable elements */
@@ -193,4 +263,43 @@ a.search-page:active {
   content: attr(placeholder);
   display: block; /* For Firefox */
 	color: #888888;
+}
+
+
+@media (max-width: 500px) {
+	#nanowiki-top {
+		flex-flow: column;
+		align-items: flex-start;
+	}
+	#nanowiki-icon {
+		height: 32px;
+		width: auto;
+	}
+	#nanowiki-title {
+		font-size: 1.1rem;
+	}
+	#nanowiki-search {
+		width: 100%;
+		position: relative;
+		justify-content: flex-end;
+		align-items: center;
+		right: 0;
+	}
+	#nanowiki-intro {
+		width: inherit;
+		margin: 0;
+		padding: 0;
+	}
+	#nanowiki-story {
+		width: calc(100% - 2em);
+		margin: 0;
+	}
+	#nanowiki-body {
+		padding: 0;
+		width: inherit;
+		margin: 0;
+	}
+	.big-font {
+		font-size: 1.1rem;
+	}
 }
