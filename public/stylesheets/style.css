@@ -3,8 +3,11 @@
 	margin: 0;
 }
 
-p, button, hr, .margin {
-  margin: 10px;
+p,
+button,
+hr,
+.margin {
+	margin: 10px;
 }
 
 button {
@@ -31,9 +34,17 @@ hr {
 	margin: 5px;
 }
 
-article, aside, canvas, figcaption,
-figure, footer, header, hgroup,
-output, section, video {
+article,
+aside,
+canvas,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+output,
+section,
+video {
 	display: block;
 }
 
@@ -44,56 +55,66 @@ html {
 	min-height: 100%;
 	height: 100%;
 	max-height: 100%;
-  align-items: center;
-  background-color: #21252B;
+	align-items: center;
+	background-color: #21252B;
 }
 
 body {
 	width: 100vw;
+	height: 100vh;
 	margin: 0;
 	padding: 0;
 	line-height: 1.5;
 	display: grid;
-	grid-template-rows: 1fr 48px;
+	grid-template-areas:
+		"top"
+		"body";
+	grid-template-rows: auto 100%;
+	overflow: hidden;
+	font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
+	color: #CCCCCC;
 }
 
 #nanowiki-body {
-  width: 95vw;
-  margin: 10px auto;
+	width: 95vw;
+	margin: 10px auto;
 	padding: 10px;
-  font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #282C34;
-  color: #CCCCCC;
+	background-color: #282C34;
+	grid-area: body;
+	overflow: auto;
 }
 
 a {
-  color: #00B7FF;
+	color: #00B7FF;
 }
 
 #nanowiki-top {
-	font-size: 24pt;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	align-items: stretch;
 	position: relative;
+	grid-area: top;
+	padding: 0;
+	margin: 0;
 }
 
 #nanowiki-header {
-  display: flex;
-  align-items: center;
-  align-content: center;
+	display: flex;
+	align-items: center;
+	align-content: center;
 }
 
 #nanowiki-icon {
-  width: 64px;
-  height: 64px;
-  display: inline-block;
-  margin: 10px;
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	margin: 10px;
 }
 
 #nanowiki-title {
 	display: inline-block;
-	font-size: 2rem;
+	font-size: 1.5rem;
+	color: #ccc;
 }
 
 #nanowiki-search {
@@ -102,10 +123,25 @@ a {
 	align-items: center;
 	height: 100%;
 }
+
 #nanowiki-search-box {
-	padding: 5px 10px;
-	border: 2px solid #ccc;
-	border-radius: 5px;
+	padding: 10px 5px;
+	border: none;
+	background: none;
+	color: #1ABC9C;
+	border-bottom: 2px solid #ccc;
+	transition: border .3s ease-in-out;
+}
+
+#nanowiki-search-box:active,
+#nanowiki-search-box:focus {
+	border-bottom: 2px solid #1ABC9C;
+	outline: none;
+}
+
+#nanowiki-search-button {
+	font-size: 1rem;
+	color: #1ABC9C;
 }
 
 #nanowiki-intro {
@@ -122,36 +158,43 @@ a {
 	display: flex;
 	justify-content: center;
 	flex-flow: column;
-	align-items: center;
+	align-items: flex-end;
 }
+
 #nanowiki-create-story {
 	width: max-content;
 }
 
 #nanowiki-footer {
 	margin: 0;
-	padding: 10px;
+	padding: 0;
+	height: 48px;
 	justify-content: center;
 	align-items: center;
-  display: flex;
+	display: flex;
 	color: #CCCCCC;
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	grid-area: footer;
 }
 
 .big-font {
-  font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 
 .huge-font {
-  font-size: 2rem;
+	font-size: 2rem;
 }
 
 .clickable {
 	cursor: pointer;
-	-webkit-user-select: none; /* Chrome, Opera, Safari */
-	-moz-user-select: none; /* Firefox 2+ */
-	-ms-user-select: none; /* IE 10+ */
-	user-select: none; /* Standard syntax */
+	-webkit-user-select: none;
+	/* Chrome, Opera, Safari */
+	-moz-user-select: none;
+	/* Firefox 2+ */
+	-ms-user-select: none;
+	/* IE 10+ */
+	user-select: none;
+	/* Standard syntax */
 }
 
 #nanowiki-story {
@@ -253,17 +296,23 @@ a.search-page:active {
 .search-current-page {
 	text-decoration: underline;
 }
+
 #featured-header {
 	font-size: 1.8rem;
+	margin-top: 1rem;
 }
-#nanowiki-featured-stories {
+
+#nanowiki-featured-stories,
+#nanowiki-search-results {
 	display: flex;
 	flex-flow: column;
 	padding: 1em;
-	max-width: 1200px;
+	max-width: 750px;
 	margin: auto;
 }
-.featured-story {
+
+.featured-story,
+.search-result {
 	width: calc(100% - 4em);
 	line-height: 1.5rem;
 	max-height: 300px;
@@ -276,28 +325,45 @@ a.search-page:active {
 	text-decoration: none;
 	transition: opacity .3s;
 }
-.featured-story:active, .featured-story:hover, .featured-story:focus, .featured-story:visited {
+
+.featured-story:active,
+.featured-story:hover,
+.featured-story:focus,
+.featured-story:visited,
+.search-result:active,
+.search-result:hover,
+.search-result:focus,
+.search-result:visited {
 	text-decoration: none !important;
 	opacity: .5;
 }
 
-.featured-story h2 {
+.featured-story h3,
+.search-result h3 {
 	width: 100%;
 	font-size: 1.2rem;
 	margin-bottom: 10px;
 	color: #1ABC9C;
 }
 
-.featured-story span {
+.featured-story span,
+.search-result span {
 	color: #aaa;
+	width: 95%;
+	max-height: 250px;
+	overflow: hidden;
+	margin: 0 auto;
+	display: block;
 }
 
 /* Placeholder text for contenteditable elements */
-[contenteditable=true]:empty:before{
-  content: attr(placeholder);
-  display: block; /* For Firefox */
+[contenteditable=true]:empty:before {
+	content: attr(placeholder);
+	display: block;
+	/* For Firefox */
 	color: #888888;
 }
+
 
 
 @media (max-width: 600px) {
@@ -305,13 +371,16 @@ a.search-page:active {
 		flex-flow: column;
 		align-items: flex-start;
 	}
+
 	#nanowiki-icon {
 		height: 32px;
 		width: auto;
 	}
+
 	#nanowiki-title {
 		font-size: 1.1rem;
 	}
+
 	#nanowiki-search {
 		width: 100%;
 		position: relative;
@@ -319,21 +388,38 @@ a.search-page:active {
 		align-items: center;
 		right: 0;
 	}
+
 	#nanowiki-intro {
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr 1fr;
 		text-align: center;
 	}
+	#nanowiki-create-story-container {
+		align-items: center;
+	}
 	#nanowiki-story {
 		width: calc(100% - 2em);
 		margin: 0;
 	}
+
 	#nanowiki-body {
 		padding: 0;
 		width: inherit;
 		margin: 0;
 	}
+
 	.big-font {
 		font-size: 1.1rem;
+	}
+}
+
+@media (max-width: 400px) {
+	#nanowiki-top {
+		grid-template-columns: 1fr;
+	}
+
+	#nanowiki-search {
+		width: 100%;
+		justify-content: center !important;
 	}
 }
