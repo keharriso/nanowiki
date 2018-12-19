@@ -314,6 +314,8 @@ a.search-page:active {
 	flex-flow: row wrap;
 	justify-content: space-between;
 	align-items: center;
+	width: 100%;
+	margin: 0;
 }
 #new-stories-header a {
 	color: #1ABC9C;
@@ -322,9 +324,10 @@ a.search-page:active {
 #nanowiki-stories {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-column-gap: 0;
+	grid-column-gap: 10px;
 	grid-row-gap: 10px;
 	max-width: 1200px;
+	width: 100%;
 	align-items: flex-start;
 	margin: 0 auto;
 }
@@ -335,7 +338,8 @@ a.search-page:active {
 	flex-flow: column;
 	padding: 10px;
 	max-width: 750px;
-	margin: 0 auto;
+	width: calc(100% - 20px);
+	margin: 0;
 }
 
 .featured-story,
@@ -437,7 +441,8 @@ a.search-page:active {
 	}
 	#nanowiki-body {
 		padding: 0;
-		padding-bottom: 50%;
+		/* padding-bottom: 50%; */
+		height: calc(100% - 48px);
 		width: inherit;
 		margin: 0;
 	}
