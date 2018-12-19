@@ -25,7 +25,7 @@ function createStoryNode(story) {
 var featured_stories = $('#nanowiki-featured-stories');
 var featured_stories_header = $('<h2 id="featured-header">');
 featured_stories_header.addClass('big-font');
-featured_stories_header.text('Featured');
+featured_stories_header.text('Popular');
 featured_stories.append(featured_stories_header);
 
 sock.on('GetFeaturedStories', function(stories) {

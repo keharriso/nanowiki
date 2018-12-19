@@ -39,7 +39,6 @@ aside,
 canvas,
 figcaption,
 figure,
-footer,
 header,
 hgroup,
 output,
@@ -69,19 +68,28 @@ body {
 	grid-template-areas:
 		"top"
 		"body";
-	grid-template-rows: auto 100%;
+	grid-template-rows: 48px calc(100% - 48px);
 	overflow: hidden;
 	font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
 	color: #CCCCCC;
 }
 
 #nanowiki-body {
-	width: 95vw;
-	margin: 10px auto;
-	padding: 10px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
 	padding-bottom: 100px;
 	background-color: #282C34;
 	grid-area: body;
+	display: grid;
+	height: 100%;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr 48px;
+	overflow: auto;
+}
+
+#nanowiki-body .content {
+	height: 100%;
 	overflow: auto;
 }
 
@@ -172,15 +180,15 @@ a {
 	display: none;
 }
 #nanowiki-footer {
-	margin: 0;
+	height: 48px;
+	width: 100%;
+	margin: auto;
 	padding: 0;
-	padding: 10px;
 	justify-content: center;
 	align-items: center;
 	display: flex;
 	color: #CCCCCC;
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-	grid-area: footer;
 }
 
 .big-font {
@@ -327,7 +335,7 @@ a.search-page:active {
 	grid-column-gap: 0;
 	grid-row-gap: 10px;
 	max-width: 1200px;
-	width: 100%;
+	width: 95%;
 	align-items: flex-start;
 	margin: 0 auto;
 }
@@ -442,8 +450,6 @@ a.search-page:active {
 	}
 	#nanowiki-body {
 		padding: 0;
-		/* padding-bottom: 50%; */
-		height: calc(100% - 48px);
 		width: inherit;
 		margin: 0;
 	}
