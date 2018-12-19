@@ -98,6 +98,7 @@ a {
 	padding: 0;
 	margin: 0 auto;
 	width: 95vw;
+	box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
 }
 
 #nanowiki-header {
@@ -391,6 +392,10 @@ a.search-page:active {
 		right: 0;
 	}
 
+	#nanowiki-search-box {
+		margin-bottom: 1em;
+	}
+
 	#nanowiki-intro {
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr 1fr;
@@ -406,6 +411,7 @@ a.search-page:active {
 
 	#nanowiki-body {
 		padding: 0;
+		padding-bottom: 50%;
 		width: inherit;
 		margin: 0;
 	}
