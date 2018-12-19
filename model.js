@@ -135,7 +135,7 @@ function populate(db) {
 					var featured = [];
 					for (var i = 0; i < featuredStories.length; ++i) {
 						var story = featuredStories[i];
-						var content = model.getContent(story, 400);
+						var content = model.getContent(story, 800);
 						featured.push({
 							readId: story.readId,
 							title: story.title,

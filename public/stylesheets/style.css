@@ -155,9 +155,10 @@ a {
 }
 
 #nanowiki-story {
-	margin: 20px;
+	margin: 20px auto;
 	width: 90%;
 	padding: 1em;
+	max-width: 800px;
 }
 
 #nanowiki-story-title-bar {
@@ -175,7 +176,7 @@ a {
 	width: 90%;
 	margin: 5px auto 1rem auto;
 	font-size: 1.2rem;
-	line-height: 1.75;
+	line-height: 1.25;
 }
 
 #nanowiki-story-controls {
@@ -205,6 +206,8 @@ a {
 
 #nanowiki-search-results {
 	padding-bottom: 10px;
+	max-width: 1200px;
+	margin: auto;
 }
 
 a.search-result:link {
@@ -257,8 +260,8 @@ a.search-page:active {
 	display: flex;
 	flex-flow: column;
 	padding: 1em;
-	max-width: 750px;
-	margin: 1em auto 0 auto;
+	max-width: 1200px;
+	margin: auto;
 }
 .featured-story {
 	width: calc(100% - 4em);
