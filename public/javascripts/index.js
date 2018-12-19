@@ -9,26 +9,51 @@ $('#nanowiki-create-story').click(function() {
 });
 
 var featured_stories = $('#nanowiki-featured-stories');
-var featured_stories_header = $('<p></p>');
+var featured_stories_header = $('<h2 id="featured-header">');
 featured_stories_header.addClass('big-font');
-featured_stories_header.text('Featured stories:');
+featured_stories_header.text('Featured');
 featured_stories.append(featured_stories_header);
 
 sock.on('GetFeaturedStories', function(stories) {
 	stories.forEach(function(story) {
-		var storyItem = $('<li></li>');
-		storyItem.addClass('featured-story');
 		var storyLink = $('<a></a>');
+		storyLink.addClass('featured-story');
 		storyLink.addClass('search-result');
 		storyLink.addClass('big-font');
 		storyLink.attr('href', '/read?id=' + story.readId);
-		storyLink.text(story.title);
-		storyItem.append(storyLink);
+		let storyTitle = $('<h3>').text(story.title);
+		storyLink.append(storyTitle);
 		var storyContent = $('<span></span>');
-		storyContent.text(' - ' + story.content);
-		storyItem.append(storyContent);
-		featured_stories.append(storyItem);
+		storyContent.text(story.content);
+		storyLink.append(storyContent);
+		featured_stories.append(storyLink);
 	});
 });
 
 sock.emit('GetFeaturedStories');
+
+
+var new_stories = $('#nanowiki-new-stories');
+var new_stories_header = $('<div id="new-stories-header">');
+var new_header = $('<h2 id="new-header">');
+new_header.addClass('big-font');
+new_header.text('New');
+new_stories_header.append(new_header);
+new_stories_header.append($('<a href="./search?query=&page=0&sort=popularity">View More &gt;&gt; </a>'));
+new_stories.append(new_stories_header);
+
+sock.on('GetFeaturedStories', function(stories) {
+	stories.forEach(function(story) {
+		var storyLink = $('<a></a>');
+		storyLink.addClass('new-story');
+		storyLink.addClass('search-result');
+		storyLink.addClass('big-font');
+		storyLink.attr('href', '/read?id=' + story.readId);
+		let storyTitle = $('<h3>').text(story.title);
+		storyLink.append(storyTitle);
+		var storyContent = $('<span></span>');
+		storyContent.text(story.content);
+		storyLink.append(storyContent);
+		new_stories.append(storyLink);
+	});
+});
