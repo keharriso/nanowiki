@@ -126,7 +126,7 @@ function populate(db) {
 		model.Story.find({}, { readId: 1, title: 1, entries: 1 },
 			{
 				skip: 0,
-				limit: 20,
+				limit: 5,
 				sort: { popularity: -1 }
 			}, function(err, featuredStories) {
 				if (err) {

@@ -153,21 +153,23 @@ a {
 	padding: 1em;
 	text-align: left;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	align-items: center;
 }
 
 #nanowiki-create-story-container {
 	display: flex;
-	justify-content: center;
-	flex-flow: column;
-	align-items: flex-end;
+	justify-content: flex-end;
+	flex-flow: row wrap;
+	align-items: center;
 }
 
 #nanowiki-create-story {
 	width: max-content;
 }
-
+#nanowiki-read-stories {
+	display: none;
+}
 #nanowiki-footer {
 	margin: 0;
 	padding: 0;
@@ -300,13 +302,17 @@ a.search-page:active {
 	text-decoration: underline;
 }
 
-#featured-header {
+#featured-header, #new-header {
 	font-size: 1.8rem;
 	margin-top: 1rem;
 }
-
+#nanowiki-stories {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
 #nanowiki-featured-stories,
-#nanowiki-search-results {
+#nanowiki-search-results, 
+#nanowiki-new-stories {
 	display: flex;
 	flex-flow: column;
 	padding: 1em;
@@ -315,13 +321,13 @@ a.search-page:active {
 }
 
 .featured-story,
-.search-result {
-	width: calc(100% - 4em);
+.search-result, .new-story {
+	width: calc(100% - 20px);
 	line-height: 1.5rem;
-	max-height: 300px;
+	max-height: 100px;
 	font-size: 1.2rem;
 	margin: 10px auto;
-	padding: 2em;
+	padding: 10px;
 	overflow: hidden;
 	list-style-type: none;
 	background: rgb(55, 63, 73);
@@ -353,7 +359,7 @@ a.search-page:active {
 .search-result span {
 	color: #aaa;
 	width: 95%;
-	max-height: 250px;
+	max-height: 70px;
 	overflow: hidden;
 	margin: 0 auto;
 	display: block;
@@ -391,31 +397,39 @@ a.search-page:active {
 		align-items: center;
 		right: 0;
 	}
-
+	#nanowiki-stories {
+		grid-template-columns: 1fr;
+	}
 	#nanowiki-search-box {
 		margin-bottom: 1em;
 	}
 
 	#nanowiki-intro {
 		grid-template-columns: 1fr;
-		grid-template-rows: 1fr 1fr;
+		grid-template-rows: 1fr auto;
 		text-align: center;
+		padding: 0;
 	}
 	#nanowiki-create-story-container {
 		align-items: center;
+		justify-content: center;
 	}
 	#nanowiki-story {
 		width: calc(100% - 2em);
 		margin: 0;
 	}
-
 	#nanowiki-body {
 		padding: 0;
 		padding-bottom: 50%;
 		width: inherit;
 		margin: 0;
 	}
-
+	#nanowiki-read-stories {
+		display: flex;
+	}
+	button {
+		padding: 16px 9px;
+	}
 	.big-font {
 		font-size: 1.1rem;
 	}
@@ -429,5 +443,7 @@ a.search-page:active {
 	#nanowiki-search {
 		width: 100%;
 		justify-content: center !important;
+		max-height: 0;
+		overflow: hidden;
 	}
 }

@@ -31,3 +31,26 @@ sock.on('GetFeaturedStories', function(stories) {
 });
 
 sock.emit('GetFeaturedStories');
+
+
+var new_stories = $('#nanowiki-new-stories');
+var new_stories_header = $('<h2 id="new-header">');
+new_stories_header.addClass('big-font');
+new_stories_header.text('New');
+new_stories.append(new_stories_header);
+
+sock.on('GetFeaturedStories', function(stories) {
+	stories.forEach(function(story) {
+		var storyLink = $('<a></a>');
+		storyLink.addClass('new-story');
+		storyLink.addClass('search-result');
+		storyLink.addClass('big-font');
+		storyLink.attr('href', '/read?id=' + story.readId);
+		let storyTitle = $('<h3>').text(story.title);
+		storyLink.append(storyTitle);
+		var storyContent = $('<span></span>');
+		storyContent.text(story.content);
+		storyLink.append(storyContent);
+		new_stories.append(storyLink);
+	});
+});
