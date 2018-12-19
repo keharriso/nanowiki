@@ -2,11 +2,12 @@ extends layout
 
 block content
   div#nanowiki-intro
-    p.big-font Welcome to #[strong= app_title], where you can take turns creating a story with your friends, one paragraph at a time. Share your stories with the world!
-    p(style="color: #1ABC9C;") There's no need to create an account, you can get started right away!
+    div
+      p.big-font Welcome to #[strong= app_title], where you can take turns creating a story with your friends, one paragraph at a time. Share your stories with the world!
+      p(style="color: #1ABC9C;") There's no need to create an account, you can get started right away!
 
-  div#nanowiki-create-story-container
-    button#nanowiki-create-story.huge-font Create Story
+    div#nanowiki-create-story-container
+      button#nanowiki-create-story.big-font Create Story
     
   ol#nanowiki-featured-stories
   script(src='/javascripts/index.js')
