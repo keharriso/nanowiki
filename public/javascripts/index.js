@@ -15,7 +15,6 @@ featured_stories_header.text('Featured stories:');
 featured_stories.append(featured_stories_header);
 
 sock.on('GetFeaturedStories', function(stories) {
-	console.log(stories);
 	stories.forEach(function(story) {
 		var storyItem = $('<li></li>');
 		storyItem.addClass('featured-story');

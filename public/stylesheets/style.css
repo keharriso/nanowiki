@@ -152,9 +152,10 @@ a {
 }
 
 #nanowiki-story {
-	margin: 20px;
+	margin: 20px auto;
 	width: 90%;
 	padding: 1em;
+	max-width: 800px;
 }
 
 #nanowiki-story-title-bar {
@@ -172,7 +173,7 @@ a {
 	width: 90%;
 	margin: 5px auto 1rem auto;
 	font-size: 1.2rem;
-	line-height: 1.75;
+	line-height: 1.25;
 }
 
 #nanowiki-story-controls {
@@ -252,6 +253,8 @@ a.search-page:active {
 	display: flex;
 	flex-flow: column;
 	padding: 1em;
+	max-width: 1200px;
+	margin: auto;
 }
 .featured-story {
 	margin: 0 0 30px 30px;
