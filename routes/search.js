@@ -14,7 +14,7 @@ function searchRouter(model, error) {
     var searchTerms = query.split('+').slice(0, MAX_SEARCH_TERMS);
     var aggregation = [];
     searchTerms.forEach(function (term) {
-      aggregation.push({ $match: { title: { $regex: term, $options: 'i' } } });
+      aggregation.push({ $match: { title: { $regex: term, $options: 'i' }, entries: { $exists: true, $ne: [] } } });
     });
     aggregation.push({ $project: { created: 1, edited: 1, readId: 1, title: 1, entries: 1, popularity: 1 } });
     if (sort === 'new') {
