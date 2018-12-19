@@ -311,6 +311,8 @@ a.search-page:active {
 	grid-template-columns: 1fr 1fr;
 	grid-column-gap: 0;
 	grid-row-gap: 10px;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 #nanowiki-featured-stories,
 #nanowiki-search-results, 
