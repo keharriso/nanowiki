@@ -169,6 +169,7 @@ io.on('connection', function(client) {
           }
         }
         if (story.entries.length > entryCount) {
+          story.edited = Date.now();
           story.save(function (err, story) {
             if (err) {
               debug(err);
@@ -198,6 +199,7 @@ io.on('connection', function(client) {
             if (entry.content === content) {
               break;
             }
+            story.edited = Date.now();
             if (content.trim() === '') {
               story.entries.splice(i, 1);
               story.save(function(err, story) {
@@ -248,6 +250,7 @@ io.on('connection', function(client) {
           author: author,
           content: content
         });
+        story.edited = Date.now();
         story.save(function(err) {
           if (err) {
             debug(err);

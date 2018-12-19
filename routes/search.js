@@ -16,11 +16,15 @@ function searchRouter(model, error) {
     searchTerms.forEach(function (term) {
       aggregation.push({ $match: { title: { $regex: term, $options: 'i' } } });
     });
-    aggregation.push({ $project: { readId: 1, title: 1, entries: 1, popularity: 1 } });
-    if (sort === 'title') {
+    aggregation.push({ $project: { created: 1, edited: 1, readId: 1, title: 1, entries: 1, popularity: 1 } });
+    if (sort === 'new') {
+      aggregation.push({ $sort: { created: -1 } });
+    } else if (sort === 'title') {
       aggregation.push({ $sort: { title: 1 } });
     } else if (sort === 'popularity') {
       aggregation.push({ $sort: { popularity: -1 } });
+    } else if (sort === 'updated') {
+      aggregation.push({ $sort: { edited: -1 }})
     }
     aggregation.push({
       $facet: {
