@@ -306,6 +306,17 @@ a.search-page:active {
 #featured-header, #new-header {
 	font-size: 1.8rem;
 	margin-top: 1rem;
+
+}
+#new-stories-header {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	align-items: center;
+}
+#new-stories-header a {
+	color: #1ABC9C;
+	text-decoration: none;
 }
 #nanowiki-stories {
 	display: grid;

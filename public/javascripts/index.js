@@ -34,9 +34,12 @@ sock.emit('GetFeaturedStories');
 
 
 var new_stories = $('#nanowiki-new-stories');
-var new_stories_header = $('<h2 id="new-header">');
-new_stories_header.addClass('big-font');
-new_stories_header.text('New');
+var new_stories_header = $('<div id="new-stories-header">');
+var new_header = $('<h2 id="new-header">');
+new_header.addClass('big-font');
+new_header.text('New');
+new_stories_header.append(new_header);
+new_stories_header.append($('<a href="./search?query=&page=0&sort=popularity">View More &gt;&gt; </a>'));
 new_stories.append(new_stories_header);
 
 sock.on('GetFeaturedStories', function(stories) {
