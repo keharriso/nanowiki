@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-var PORT = process.env.PORT || '3000';
+var HTTP_PORT = process.env.HTTP_PORT || '8080';
+var HTTPS_PORT = process.env.HTTPS_PORT || '4040';
 var MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost/test';
+var USE_HTTPS = process.env.USE_HTTPS || 'no';
 
 /**
  * Set up MongoDB.
@@ -15,21 +17,49 @@ var model = require('../model')(MONGO_URI);
 
 var app = require('../app')(model);
 var debug = require('debug')('nanowiki:server');
+var express = require('express');
+var fs = require('fs');
 var http = require('http');
+var https = require('https');
 var schedule = require('node-schedule');
 
-/**
- * Get port from environment and store in Express.
- */
+var server, port;
 
-var port = normalizePort(PORT);
-app.set('port', port);
+if (USE_HTTPS === 'yes') {
+  port = normalizePort(HTTPS_PORT);
+  app.set('port', port);
 
-/**
- * Create HTTP server.
- */
+  /**
+   * Create HTTP server.
+   */
 
-var server = http.createServer(app);
+  var http = express();
+
+  http.get('*', function(req, res) {
+    res.redirect('https://' + req.headers.host + req.url);
+  });
+
+  http.listen(HTTP_PORT);
+
+  /**
+   * Create HTTPS server.
+   */
+
+  server = https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/nanowiki.xyz/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/nanowiki.xyz/cert.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/nanowiki.xyz/fullchain.pem')
+  }, app);
+} else {
+  port = normalizePort(HTTP_PORT);
+  app.set('port', port);
+
+  /**
+   * Create HTTP server.
+   */
+
+  server = http.createServer(app);
+}
 
 /**
  * Set up Socket.IO server.
