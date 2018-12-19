@@ -98,6 +98,23 @@ function populate(db) {
 			}
 		});
 	});
+  schemas.Story.static('expireEmpty', function(lifetime, callback) {
+    const expireDate = new Date();
+    expireDate.setDate(expireDate.getDate() - lifetime);
+    model.Story.countDocuments({viewed: {$lt: expireDate}, entries: []}, function(err, count) {
+      if (err) {
+        debug(err);
+      } else {
+        model.Story.deleteMany({viewed: {$lt: expireDate}, entries: []}, function (err) {
+          if (err) {
+            debug(err);
+          } else {
+            callback(null, count);
+          }
+        });
+      }
+    });
+  });
 	debug('Initializing models');
 	for (var name in schemas)
 		model[name] = mongoose.model(name, schemas[name]);
